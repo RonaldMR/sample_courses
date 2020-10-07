@@ -4,10 +4,11 @@ import { courses } from '../../../store/modules'
 
 import Courses from './Courses'
 
-const { getCourses } = courses.selectors
+const { getItems, getIsLoading } = courses.selectors
 
 const mapStateToProps = state => ({
-  items: getCourses(state)
+  items: getItems(state),
+  isLoading: getIsLoading(state)
 })
 
 const CoursesContainer = connect(mapStateToProps)(Courses)

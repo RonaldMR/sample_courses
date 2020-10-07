@@ -1,4 +1,4 @@
-import { select, takeLatest, put } from 'redux-saga/effects'
+import { select, takeLatest, put, call } from 'redux-saga/effects'
 
 import { courses, filters } from '../modules'
 
@@ -77,9 +77,30 @@ const COURSES_DATA = [
   }
 ]
 
+const CATEGORY_LIST_DATA = [
+  {
+    id: '1',
+    category: '.NET'
+  },
+  {
+    id: '2',
+    category: 'JS'
+  },
+  {
+    id: '3',
+    category: 'PYTHON'
+  }
+]
+
 export function* applyFilters() {
   const category = yield select(filters.selectors.getCategory)
   const date = yield select(filters.selectors.getDate)
+
+  const sleep = delay => new Promise(resolve => setTimeout(resolve, delay))
+
+  yield put(courses.actions.setIsLoading(true))
+
+  yield call(sleep, 2000)
 
   const filteredCourseList = COURSES_DATA.filter(course => {
     if (date.toDateString() !== course.date.toDateString()) {
@@ -90,11 +111,19 @@ export function* applyFilters() {
   })
 
   yield put(courses.actions.set(filteredCourseList))
+
+  yield put(courses.actions.setIsLoading(false))
+}
+
+export function* fetchFilters() {
+  yield put(filters.actions.setCategoryList(CATEGORY_LIST_DATA))
+  yield call(applyFilters)
 }
 
 const filtersSaga = [
   takeLatest(filters.actionTypes.SET_CATEGORY, applyFilters),
-  takeLatest(filters.actionTypes.SET_DATE, applyFilters)
+  takeLatest(filters.actionTypes.SET_DATE, applyFilters),
+  takeLatest(filters.actionTypes.FETCH_FILTERS, fetchFilters)
 ]
 
 export default filtersSaga

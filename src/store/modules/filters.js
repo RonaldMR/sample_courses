@@ -2,7 +2,9 @@ const NAME = 'filters'
 
 const actionTypes = {
   SET_CATEGORY: `${NAME}/SET_CATEGORY`,
-  SET_DATE: `${NAME}/SET_DATE`
+  SET_CATEGORY_LIST: `${NAME}/SET_CATEGORY_LIST`,
+  SET_DATE: `${NAME}/SET_DATE`,
+  FETCH_FILTERS: `${NAME}/FETCH_FILTERS`
 }
 
 const actions = {
@@ -10,35 +12,31 @@ const actions = {
     type: actionTypes.SET_CATEGORY,
     payload: { category }
   }),
+  setCategoryList: categoryList => ({
+    type: actionTypes.SET_CATEGORY_LIST,
+    payload: { categoryList }
+  }),
   setDate: date => ({
     type: actionTypes.SET_DATE,
     payload: { date }
+  }),
+  fetchFilters: () => ({
+    type: actionTypes.FETCH_FILTERS
   })
 }
 
 export const initialState = {
   category: '',
   date: new Date(),
-  categoryList: [
-    {
-      id: '1',
-      category: '.NET'
-    },
-    {
-      id: '2',
-      category: 'JS'
-    },
-    {
-      id: '3',
-      category: 'PYTHON'
-    }
-  ]
+  categoryList: []
 }
 
 const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case actionTypes.SET_CATEGORY:
       return { ...state, category: payload.category }
+    case actionTypes.SET_CATEGORY_LIST:
+      return { ...state, categoryList: payload.categoryList }
     case actionTypes.SET_DATE:
       return { ...state, date: payload.date }
     default:
